@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ubiubi18/idena-compat-stack/schema/stack-lock.schema.json",
+  "title": "Idena legacy compatibility stack lock",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "releaseId",
+    "status",
+    "legacyBaseline",
+    "chainInvariants",
+    "components",
+    "toolchains",
+    "artifacts",
+    "consumerPins",
+    "requiredGates"
+  ],
+  "properties": {
+    "schema": {"const": 1},
+    "releaseId": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{1,127}$"},
+    "status": {"enum": ["candidate", "released", "retired"]},
+    "legacyBaseline": {"type": "object"},
+    "chainInvariants": {"type": "object"},
+    "components": {"type": "array", "minItems": 1},
+    "toolchains": {"type": "object"},
+    "artifacts": {"type": "array", "minItems": 1},
+    "consumerPins": {"type": "object"},
+    "requiredGates": {"type": "array", "minItems": 1, "uniqueItems": true}
+  }
+}
