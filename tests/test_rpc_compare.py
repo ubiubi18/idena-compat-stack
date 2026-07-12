@@ -82,6 +82,7 @@ class RpcCompareTest(unittest.TestCase):
             step=1,
             timeout=5,
             allow_remote_rpc=False,
+            quiet=False,
         )
 
     def test_matching_nodes_pass(self) -> None:
@@ -91,7 +92,21 @@ class RpcCompareTest(unittest.TestCase):
         with contextlib.redirect_stdout(output):
             self.assertEqual(MODULE.compare(self.args(left, right)), 0)
         self.assertIn("comparison passed blocks=3", output.getvalue())
+        self.assertIn("aggregate_sha256=", output.getvalue())
         self.assertNotIn("test-only-key", output.getvalue())
+
+    def test_quiet_mode_prints_only_aggregate_result(self) -> None:
+        left = self.start_server("same-public-fixture")
+        right = self.start_server("same-public-fixture")
+        args = self.args(left, right)
+        args.quiet = True
+        output = io.StringIO()
+        with contextlib.redirect_stdout(output):
+            self.assertEqual(MODULE.compare(args), 0)
+        rendered = output.getvalue().splitlines()
+        self.assertEqual(1, len(rendered))
+        self.assertIn("comparison passed blocks=3 from=10 to=12 step=1", rendered[0])
+        self.assertRegex(rendered[0], r"aggregate_sha256=[0-9a-f]{64}$")
 
     def test_mismatch_output_is_redacted(self) -> None:
         left = self.start_server("identity-address-must-not-leak-left")

@@ -139,6 +139,7 @@ def compare(args: argparse.Namespace) -> int:
     legacy = RpcClient(args.legacy_rpc_url, args.legacy_api_key_file, args.allow_remote_rpc, args.timeout)
     modern = RpcClient(args.modern_rpc_url, args.modern_api_key_file, args.allow_remote_rpc, args.timeout)
     checked = 0
+    aggregate = hashlib.sha256()
     for height in range(args.from_height, args.to_height + 1, args.step):
         legacy_block = legacy.call("bcn_blockAt", [height], height)
         modern_block = modern.call("bcn_blockAt", [height], height)
@@ -152,8 +153,13 @@ def compare(args: argparse.Namespace) -> int:
             )
             return 1
         checked += 1
-        print(f"match height={height} sha256={left_digest}")
-    print(f"comparison passed blocks={checked}")
+        aggregate.update(f"{height}:{left_digest}\n".encode("ascii"))
+        if not args.quiet:
+            print(f"match height={height} sha256={left_digest}")
+    print(
+        f"comparison passed blocks={checked} from={args.from_height} "
+        f"to={args.to_height} step={args.step} aggregate_sha256={aggregate.hexdigest()}"
+    )
     return 0
 
 
@@ -175,6 +181,7 @@ def main() -> int:
     parser.add_argument("--step", type=positive_int, default=1)
     parser.add_argument("--timeout", type=positive_int, default=20)
     parser.add_argument("--allow-remote-rpc", action="store_true")
+    parser.add_argument("--quiet", action="store_true", help="print only the aggregate comparison result")
     args = parser.parse_args()
     if args.to_height < args.from_height:
         parser.error("--to-height must be greater than or equal to --from-height")

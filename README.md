@@ -9,6 +9,12 @@ or consensus upgrade.
 `requiredGates` has passed. A green unit-test run alone is not sufficient to
 change that status.
 
+The current `rc3` candidate supersedes `rc2`. A clean full-replay canary found
+that node startup dereferenced a missing current block after an IPFS timeout;
+the locked node now fails closed and lets the service retry without starting
+partially initialized consensus components. No chain invariant or Wasm
+artifact changed.
+
 ## Verify the lock
 
 ```sh
@@ -28,12 +34,14 @@ python3 scripts/compare-idena-rpc.py \
   --modern-rpc-url http://127.0.0.1:9010 \
   --modern-api-key-file /protected/modern-api.key \
   --from-height 10000000 \
-  --to-height 10001000
+  --to-height 10001000 \
+  --quiet
 ```
 
 The comparator prints only heights and canonical response digests. It never
 prints RPC keys, endpoints, block contents, transactions, wallet data, or
-identity addresses.
+identity addresses. `--quiet` emits one aggregate SHA-256 result suitable for
+an external gate attestation.
 
 ## Release rule
 
