@@ -61,7 +61,7 @@
     },
     {
       "name": "libidena_wasm_linux_aarch64.a",
-      "sha256": "3d636c192f34385d9c9dc5797acf29bd33ab1761b78fd65711cff11e64277c81"
+      "sha256": "3d636c192f34385d3c9dc5797acf29bd33ab1761b78fd65711cff11e64277c81"
     },
     {
       "name": "libidena_wasm_darwin_amd64.a",
