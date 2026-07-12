@@ -87,6 +87,15 @@
     },
     "idena-social-ui": {
       "idena-sdk-js-lite": "cc6e69b9b87aa381398b7839050a4640f46eb5ba"
+    },
+    "idena-web": {
+      "idena-go": "a189d7d04f1139c7cecf8b2d24866c7e1e323422"
+    },
+    "idena-indexer": {
+      "idena-go": "a189d7d04f1139c7cecf8b2d24866c7e1e323422"
+    },
+    "P2poolBTC": {
+      "idena-go": "a189d7d04f1139c7cecf8b2d24866c7e1e323422"
     }
   },
   "requiredGates": [
