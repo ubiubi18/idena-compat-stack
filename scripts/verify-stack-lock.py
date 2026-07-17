@@ -4,11 +4,12 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import sys
 import urllib.parse
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 
@@ -16,6 +17,10 @@ SHA1_RE = re.compile(r"^[0-9a-f]{40}$")
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 RELEASE_RE = re.compile(r"^[a-z0-9][a-z0-9._-]{1,127}$")
 VERSION_RE = re.compile(r"^[0-9]+\.[0-9]+(?:\.[0-9]+)?$")
+EVIDENCE_RE = re.compile(
+    r"^compatibility/evidence/[A-Za-z0-9._-]+(?:/[A-Za-z0-9._-]+)*\.json$"
+)
+MAX_JSON_BYTES = 1024 * 1024
 FORBIDDEN_KEY_RE = re.compile(
     r"(?:api.?key|password|passwd|secret|token|cookie|private.?key|wallet|mnemonic)",
     re.IGNORECASE,
@@ -31,6 +36,7 @@ EXPECTED_TOP_LEVEL = {
     "artifacts",
     "consumerPins",
     "requiredGates",
+    "gateResults",
 }
 EXPECTED_COMPONENTS = {
     "idena-go",
@@ -55,6 +61,24 @@ class LockError(ValueError):
 def require(condition: bool, message: str) -> None:
     if not condition:
         raise LockError(message)
+
+
+def reject_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        require(key not in result, f"duplicate object key: {key}")
+        result[key] = value
+    return result
+
+
+def parse_json(raw: bytes, label: str) -> Any:
+    require(len(raw) <= MAX_JSON_BYTES, f"{label} is unexpectedly large")
+    try:
+        return json.loads(
+            raw.decode("utf-8"), object_pairs_hook=reject_duplicate_keys
+        )
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise LockError(f"{label} is not valid UTF-8 JSON") from exc
 
 
 def validate_repository(value: Any, label: str) -> str:
@@ -92,7 +116,7 @@ def validate_lock(payload: Any) -> None:
 
     require(payload["schema"] == 1, "unsupported stack-lock schema")
     require(isinstance(payload["releaseId"], str) and RELEASE_RE.fullmatch(payload["releaseId"]), "invalid releaseId")
-    require(payload["status"] in {"candidate", "released", "retired"}, "invalid release status")
+    require(payload["status"] in {"candidate", "approved", "retired"}, "invalid release status")
 
     legacy = payload["legacyBaseline"]
     require(isinstance(legacy, dict) and set(legacy) == {"repository", "commit", "nodeVersion"}, "invalid legacy baseline")
@@ -160,18 +184,53 @@ def validate_lock(payload: Any) -> None:
     require(isinstance(gates, list) and gates, "requiredGates must not be empty")
     require(all(isinstance(gate, str) and RELEASE_RE.fullmatch(gate) for gate in gates), "invalid gate name")
     require(len(set(gates)) == len(gates), "duplicate required gate")
-    if payload["status"] == "released":
-        raise LockError("released status requires external signed attestation; keep this lock candidate")
+
+    results = payload["gateResults"]
+    require(isinstance(results, dict), "gateResults must be an object")
+    require(set(results).issubset(gates), "gateResults contains an undeclared gate")
+    for gate, result in results.items():
+        require(isinstance(result, dict), f"invalid result for {gate}")
+        require(set(result) == {"status", "evidence", "sha256"}, f"invalid result fields for {gate}")
+        require(result["status"] == "passed", f"gate {gate} has not passed")
+        evidence = result["evidence"]
+        require(isinstance(evidence, str) and EVIDENCE_RE.fullmatch(evidence), f"invalid evidence path for {gate}")
+        evidence_path = PurePosixPath(evidence)
+        require(
+            evidence_path.parts[:2] == ("compatibility", "evidence")
+            and evidence_path.suffix == ".json"
+            and all(part not in {"", ".", ".."} for part in evidence_path.parts),
+            f"invalid evidence path for {gate}",
+        )
+        require(
+            isinstance(result["sha256"], str) and SHA256_RE.fullmatch(result["sha256"]),
+            f"invalid evidence digest for {gate}",
+        )
+    if payload["status"] == "approved":
+        require(set(results) == set(gates), "approved lock requires passing evidence for every gate")
+
+
+def verify_gate_evidence(payload: dict[str, Any], lock_path: Path) -> None:
+    lock_parent = lock_path.absolute().parent
+    repository_root = lock_parent.parent if lock_parent.name == "compatibility" else lock_parent
+    for gate, result in payload["gateResults"].items():
+        relative = PurePosixPath(result["evidence"])
+        evidence_path = repository_root.joinpath(*relative.parts)
+        current = repository_root
+        for part in relative.parts:
+            current = current / part
+            require(not current.is_symlink(), f"evidence path for {gate} contains a symlink")
+        require(evidence_path.is_file(), f"evidence file for {gate} is missing")
+        raw = evidence_path.read_bytes()
+        parse_json(raw, f"evidence file for {gate}")
+        require(
+            hashlib.sha256(raw).hexdigest() == result["sha256"],
+            f"evidence digest mismatch for {gate}",
+        )
 
 
 def load_lock(path: Path) -> Any:
     require(path.is_file() and not path.is_symlink(), "stack lock must be a regular, non-symlink file")
-    raw = path.read_bytes()
-    require(len(raw) <= 1024 * 1024, "stack lock is unexpectedly large")
-    try:
-        return json.loads(raw)
-    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
-        raise LockError("stack lock is not valid UTF-8 JSON") from exc
+    return parse_json(path.read_bytes(), "stack lock")
 
 
 def main() -> int:
@@ -179,7 +238,9 @@ def main() -> int:
     parser.add_argument("lock", type=Path)
     args = parser.parse_args()
     try:
-        validate_lock(load_lock(args.lock))
+        payload = load_lock(args.lock)
+        validate_lock(payload)
+        verify_gate_evidence(payload, args.lock)
     except (OSError, LockError) as exc:
         print(f"stack lock validation failed: {exc}", file=sys.stderr)
         return 1
