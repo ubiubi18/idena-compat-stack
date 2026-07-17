@@ -7,13 +7,14 @@ or consensus upgrade.
 
 `stack-lock.json` is intentionally marked `candidate` until every gate in
 `requiredGates` has passed. A green unit-test run alone is not sufficient to
-change that status.
+change that status. An `approved` lock must bind every gate to a checked-in,
+non-symlink JSON evidence file by its exact SHA-256 digest.
 
-The current `rc3` candidate supersedes `rc2`. A clean full-replay canary found
-that node startup dereferenced a missing current block after an IPFS timeout;
-the locked node now fails closed and lets the service retry without starting
-partially initialized consensus components. No chain invariant or Wasm
-artifact changed.
+The current `rc7` candidate supersedes `rc6`. It advances only the reviewed
+`idena-go` runtime commit so malformed encrypted node-key payloads fail closed
+instead of reaching unsafe slicing paths, and sensitive derived buffers are
+cleared after use. Chain identifiers, consensus rules, Wasm components, SDK,
+and native artifacts remain pinned to the previously reviewed values.
 
 ## Verify the lock
 
