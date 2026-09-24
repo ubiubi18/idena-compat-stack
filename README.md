@@ -10,11 +10,13 @@ or consensus upgrade.
 change that status. An `approved` lock must bind every gate to a checked-in,
 non-symlink JSON evidence file by its exact SHA-256 digest.
 
-The current `rc7` candidate supersedes `rc6`. It advances only the reviewed
-`idena-go` runtime commit so malformed encrypted node-key payloads fail closed
-instead of reaching unsafe slicing paths, and sensitive derived buffers are
-cleared after use. Chain identifiers, consensus rules, Wasm components, SDK,
-and native artifacts remain pinned to the previously reviewed values.
+The current `rc10` candidate pins the checked rkyv archive migration across
+Wasmer, idena-wasm, the native binding, and the node, with regenerated native
+archive digests. The Go toolchain advances to the node's required 1.26.8.
+Chain identifiers, consensus rules, and the SDK remain unchanged. The compiled
+archive ABI changes from 1 to 2; old compiled archives must be rebuilt from
+trusted Wasm. This does not establish blockchain state compatibility.
+Consumer pins describe the intended candidate stack, not verified deployment.
 
 ## Verify the lock
 

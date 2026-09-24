@@ -22,10 +22,10 @@ class StackLockTest(unittest.TestCase):
     def test_repository_lock_is_valid(self) -> None:
         MODULE.validate_lock(self.payload)
 
-    def test_repository_lock_pins_rc7_runtime(self) -> None:
+    def test_repository_lock_pins_rc10_runtime(self) -> None:
         self.assertEqual(
             self.payload["releaseId"],
-            "idena-mainnet-legacy-compat-2026.07.17-rc7",
+            "idena-mainnet-legacy-compat-2026.09.24-rc10",
         )
         node = next(
             component
@@ -34,7 +34,7 @@ class StackLockTest(unittest.TestCase):
         )
         self.assertEqual(
             node["runtimeCodeCommit"],
-            "eeb73fbaf80493e3bcbc4a661fa3a7e2f07ec2bd",
+            "deebf1d1a7bc2c4055427774eb3e1a0fa11537c5",
         )
 
     def test_consensus_change_opt_in_is_rejected(self) -> None:

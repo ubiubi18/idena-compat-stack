@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "releaseId": "idena-mainnet-legacy-compat-2026.07.17-rc7",
+  "releaseId": "idena-mainnet-legacy-compat-2026.09.24-rc10",
   "status": "candidate",
   "legacyBaseline": {
     "repository": "https://github.com/idena-network/idena-go.git",
@@ -20,26 +20,26 @@
       "name": "idena-go",
       "role": "node",
       "repository": "https://github.com/ubiubi18/idena-go.git",
-      "commit": "eeb73fbaf80493e3bcbc4a661fa3a7e2f07ec2bd",
-      "runtimeCodeCommit": "eeb73fbaf80493e3bcbc4a661fa3a7e2f07ec2bd"
+      "commit": "deebf1d1a7bc2c4055427774eb3e1a0fa11537c5",
+      "runtimeCodeCommit": "deebf1d1a7bc2c4055427774eb3e1a0fa11537c5"
     },
     {
       "name": "idena-wasm-binding",
       "role": "native-binding",
       "repository": "https://github.com/ubiubi18/idena-wasm-binding.git",
-      "commit": "67ba065fdb02aa07cced2a43a261e481ca5b39d9"
+      "commit": "01ccca5cc3c94917725964541954a9f20e3412e9"
     },
     {
       "name": "idena-wasm",
       "role": "contract-runtime",
       "repository": "https://github.com/ubiubi18/idena-wasm.git",
-      "commit": "7e1138959f9f96f59d20efa11f2c27b134067541"
+      "commit": "b686ed84d26b43dfa74ea12a0d3af1b120a50598"
     },
     {
       "name": "wasmer",
       "role": "wasm-engine",
       "repository": "https://github.com/ubiubi18/wasmer.git",
-      "commit": "1637dea03c0110f7dd800f2d9781193caf820074"
+      "commit": "45f9bccf49187be24874400067923abda4c037da"
     },
     {
       "name": "idena-sdk-js-lite",
@@ -49,7 +49,7 @@
     }
   ],
   "toolchains": {
-    "go": "1.26.5",
+    "go": "1.26.8",
     "rust": "1.97.0",
     "node": "24.18.0",
     "npm": "11.16.0"
@@ -57,45 +57,45 @@
   "artifacts": [
     {
       "name": "libidena_wasm_linux_amd64.a",
-      "sha256": "0c8941ab8073a63946214a62c87b78a1e0f7731a3d81809588f1ae0088c8ee35"
+      "sha256": "069a76fa8eb121ecf120ead2a7a7e2e40cf6ceb3d983dd37d0f475a9675d9eac"
     },
     {
       "name": "libidena_wasm_linux_aarch64.a",
-      "sha256": "3d636c192f34385d3c9dc5797acf29bd33ab1761b78fd65711cff11e64277c81"
+      "sha256": "c9a57082ddba1341a24b99f92ed818b0b51ee98ae00c049ba8a384d18957001e"
     },
     {
       "name": "libidena_wasm_darwin_amd64.a",
-      "sha256": "0451d1480827de6dc413712d461264d0f586287b6fd7e3c587e60ce374854767"
+      "sha256": "8991e4d8d1ab18d89c962903405a0f510b85305506eddef7a463318099416ca3"
     },
     {
       "name": "libidena_wasm_darwin_arm64.a",
-      "sha256": "b7fad0121df49ebe30286d7a8c3660ba198111f9ca3bcf414eaa422487186a90"
+      "sha256": "d8d4f1bf2593840f5a2092b6967c16a5d3bd1a860cddbd6559a14e062d641eaf"
     },
     {
       "name": "libidena_wasm_windows_amd64.a",
-      "sha256": "38cd4e31d29e0acda2a2d7511722eef6e34e0ff922ab7f2b01d30a4107d3bcf7"
+      "sha256": "8da1eb88a045fbc2cd4448a89acb11d7ce16568768fe2d71f461644c82b5c3df"
     }
   ],
   "consumerPins": {
     "idena-desktop": {
-      "idena-go": "eeb73fbaf80493e3bcbc4a661fa3a7e2f07ec2bd",
-      "idena-wasm-binding": "67ba065fdb02aa07cced2a43a261e481ca5b39d9"
+      "idena-go": "deebf1d1a7bc2c4055427774eb3e1a0fa11537c5",
+      "idena-wasm-binding": "01ccca5cc3c94917725964541954a9f20e3412e9"
     },
     "idena-social-contract-runner": {
-      "idena-go": "eeb73fbaf80493e3bcbc4a661fa3a7e2f07ec2bd",
-      "idena-wasm-binding": "67ba065fdb02aa07cced2a43a261e481ca5b39d9"
+      "idena-go": "deebf1d1a7bc2c4055427774eb3e1a0fa11537c5",
+      "idena-wasm-binding": "01ccca5cc3c94917725964541954a9f20e3412e9"
     },
     "idena-social-ui": {
       "idena-sdk-js-lite": "cc6e69b9b87aa381398b7839050a4640f46eb5ba"
     },
     "idena-web": {
-      "idena-go": "eeb73fbaf80493e3bcbc4a661fa3a7e2f07ec2bd"
+      "idena-go": "deebf1d1a7bc2c4055427774eb3e1a0fa11537c5"
     },
     "idena-indexer": {
-      "idena-go": "eeb73fbaf80493e3bcbc4a661fa3a7e2f07ec2bd"
+      "idena-go": "deebf1d1a7bc2c4055427774eb3e1a0fa11537c5"
     },
     "P2poolBTC": {
-      "idena-go": "eeb73fbaf80493e3bcbc4a661fa3a7e2f07ec2bd"
+      "idena-go": "deebf1d1a7bc2c4055427774eb3e1a0fa11537c5"
     }
   },
   "requiredGates": [
