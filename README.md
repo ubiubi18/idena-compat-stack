@@ -1,5 +1,9 @@
 # Idena Legacy Compatibility Stack
 
+## Research disclaimer
+
+This is experimental research software. I cannot guarantee its security, correctness, or fitness for any purpose. Use it at your own risk, take responsibility for your decisions, independently verify changes, and stay vigilant.
+
 This repository defines the reviewed source and artifact set for the
 `ubiubi18` Idena compatibility fork. It is a release manifest and verification
 tooling repository; it does not define a new chain, genesis, network, protocol,
