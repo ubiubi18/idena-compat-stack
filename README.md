@@ -10,7 +10,7 @@ or consensus upgrade.
 change that status. An `approved` lock must bind every gate to a checked-in,
 non-symlink JSON evidence file by its exact SHA-256 digest.
 
-The current `rc11` candidate pins the checked rkyv archive migration across
+The current `rc12` candidate pins the checked rkyv archive migration across
 Wasmer, idena-wasm, the native binding, and the node, with regenerated native
 archive digests. The Go toolchain advances to the node's required 1.26.8.
 Chain identifiers, consensus rules, and the SDK remain unchanged. The compiled
