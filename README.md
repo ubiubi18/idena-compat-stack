@@ -10,7 +10,7 @@ or consensus upgrade.
 change that status. An `approved` lock must bind every gate to a checked-in,
 non-symlink JSON evidence file by its exact SHA-256 digest.
 
-The current `rc10` candidate pins the checked rkyv archive migration across
+The current `rc11` candidate pins the checked rkyv archive migration across
 Wasmer, idena-wasm, the native binding, and the node, with regenerated native
 archive digests. The Go toolchain advances to the node's required 1.26.8.
 Chain identifiers, consensus rules, and the SDK remain unchanged. The compiled
@@ -41,10 +41,11 @@ python3 scripts/compare-idena-rpc.py \
   --quiet
 ```
 
-The comparator prints only heights and canonical response digests. It never
-prints RPC keys, endpoints, block contents, transactions, wallet data, or
-identity addresses. `--quiet` emits one aggregate SHA-256 result suitable for
-an external gate attestation.
+The comparator rejects unavailable (`null`) blocks instead of treating two
+missing responses as a match. It prints only heights and canonical response
+digests. It never prints RPC keys, endpoints, block contents, transactions,
+wallet data, or identity addresses. `--quiet` emits one aggregate SHA-256
+result suitable for an external gate attestation.
 
 ## Release rule
 

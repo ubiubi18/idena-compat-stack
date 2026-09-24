@@ -28,13 +28,18 @@ class Handler(BaseHTTPRequestHandler):
             payload = {"id": request.get("id"), "error": {"message": "unauthorized"}}
         else:
             height = int(request["params"][0])
-            payload = {
-                "id": request.get("id"),
-                "result": {
+            result = (
+                None
+                if self.server.return_null
+                else {
                     "height": height,
                     "header": {"root": f"root-{height}"},
                     "privateRegressionSentinel": self.server.sentinel,
-                },
+                }
+            )
+            payload = {
+                "id": request.get("id"),
+                "result": result,
             }
         raw = json.dumps(payload).encode("utf-8")
         self.send_response(200)
@@ -62,10 +67,11 @@ class RpcCompareTest(unittest.TestCase):
             thread.join(timeout=5)
         self.temp.cleanup()
 
-    def start_server(self, sentinel: str) -> str:
+    def start_server(self, sentinel: str, *, return_null: bool = False) -> str:
         server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
         server.expected_key = "test-only-key"
         server.sentinel = sentinel
+        server.return_null = return_null
         thread = threading.Thread(target=server.serve_forever, daemon=True)
         thread.start()
         self.servers.append((server, thread))
@@ -118,6 +124,15 @@ class RpcCompareTest(unittest.TestCase):
         self.assertIn("mismatch height=10", rendered)
         self.assertNotIn("must-not-leak", rendered)
         self.assertNotIn("test-only-key", rendered)
+
+    def test_matching_null_blocks_do_not_false_pass(self) -> None:
+        left = self.start_server("unused", return_null=True)
+        right = self.start_server("unused", return_null=True)
+        with self.assertRaisesRegex(
+            MODULE.ComparisonError,
+            r"block unavailable height=10 side=both",
+        ):
+            MODULE.compare(self.args(left, right))
 
     def test_remote_rpc_requires_explicit_opt_in(self) -> None:
         with self.assertRaises(MODULE.ComparisonError):

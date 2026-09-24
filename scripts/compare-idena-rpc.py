@@ -143,6 +143,16 @@ def compare(args: argparse.Namespace) -> int:
     for height in range(args.from_height, args.to_height + 1, args.step):
         legacy_block = legacy.call("bcn_blockAt", [height], height)
         modern_block = modern.call("bcn_blockAt", [height], height)
+        if legacy_block is None or modern_block is None:
+            if legacy_block is None and modern_block is None:
+                side = "both"
+            elif legacy_block is None:
+                side = "legacy"
+            else:
+                side = "modern"
+            raise ComparisonError(
+                f"block unavailable height={height} side={side}"
+            )
         left_digest = digest(legacy_block)
         right_digest = digest(modern_block)
         if left_digest != right_digest:
