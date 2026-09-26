@@ -63,6 +63,14 @@ each other as gossip peers, and exchanged IPFS payloads in both directions.
 The test used the supported local-discovery profile for private Docker
 addresses, with external routing disabled.
 
+[evidence/rc16-historical-prefix-replay.json](evidence/rc16-historical-prefix-replay.json)
+records a subsequent full-sync replay of historical blocks 4,871,138 through
+4,872,000 using separate legacy and modern databases. All 863 canonical block
+RPC responses matched, including the state and identity roots. The test nodes
+retrieved historical headers, certificates and IPFS bodies from an existing
+node; external P2P access was disabled before comparison. This is bounded
+historical coverage, not a replay of the complete chain.
+
 This is supporting smoke evidence, not a passing release-gate report. It does
 not cover historical state replay, block or transaction propagation, or live
 chain synchronization. The candidate lock and gate results remain unchanged.

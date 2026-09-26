@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "status": "bounded-state-replay-passed",
+  "releaseId": "idena-mainnet-legacy-compat-2026.09.25-rc16",
+  "legacyBaselineCommit": "938be81dbdeff85f888f4337060a8ebabb12e5b5",
+  "runtimeCodeCommit": "0e50a50e6f5c158a83cec63f8fade2449e960364",
+  "legacyBinarySha256": "3861d14f4eeacae2fcb30ae2ee3b808422ee12af42b0ce46ef7826f87e473191",
+  "modernBinarySha256": "ad1ce5b27449c834fd2865afb20274896a977cfcafae48b5d859975c92518a52",
+  "sources": {
+    "legacy": "https://github.com/idena-network/idena-go/releases/tag/v1.1.2",
+    "modern": "https://github.com/ubiubi18/IdenaAI/actions/runs/36233596805"
+  },
+  "startedAt": "2026-09-26T10:50:55.489Z",
+  "completedAt": "2026-09-26T10:55:17.979Z",
+  "fromHeight": 4871138,
+  "toHeight": 4872000,
+  "blocksCompared": 863,
+  "step": 1,
+  "comparisonAggregateSha256": "a516d7d0ce1e024da15d67e1bc245d9011e3afe05452bc534a6cc8ab7462bfdc",
+  "checkpoint": {
+    "height": 4872000,
+    "hash": "0xf00f3b2d12f781ac7f5ed5bb29e2e96d14264229ba369ca4d14db8ceda98c216",
+    "root": "0x68853dc6c262832434fa2900da0a56bd6689bceb18ccaf455458d15e82a9c3d5",
+    "identityRoot": "0x0757d719b0dc863b9ae8e61638e952f57c58cdff56f35a27ceeea571bf4b9c27"
+  },
+  "observedStopHeights": {
+    "legacy": 4872007,
+    "modern": 4872010
+  },
+  "configuration": {
+    "FastSync": false,
+    "AutoOnline": false,
+    "networkId": 1,
+    "ipfsProfile": "local-discovery"
+  },
+  "isolation": "Test nodes on Docker internal network; one TCP relay via SSH to an existing global IPv6 P2P listener of the owned Pi. External P2P route disabled before comparison. Fresh disposable identities; no live-node configuration or service changes.",
+  "execution": "Both stock binaries applied historical blocks through full sync. AddBlock recomputed and validated state and identity roots. All 863 canonical block RPC responses matched after replay.",
+  "commands": [
+    "idena-node --config disposable-config.json --datadir disposable-data --verbosity 2",
+    "compare-idena-rpc.py --from-height 4871138 --to-height 4872000 --step 1 --quiet (two isolated loopback RPC URLs and mode-0600 ephemeral key files)"
+  ],
+  "limitations": [
+    "This is a bounded historical prefix, not a replay of the full chain or all consensus transitions.",
+    "Stop heights may overshoot the checkpoint; comparison covers only the specified common range.",
+    "No release lock approval, application approval, installer execution or live deployment is asserted."
+  ],
+  "cleanup": "All task-created containers, internal network, SSH forwarding session, disposable state and ephemeral keys removed after comparison; live Pi service unchanged."
+}
