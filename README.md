@@ -71,9 +71,10 @@ retrieved historical headers, certificates and IPFS bodies from an existing
 node; external P2P access was disabled before comparison. This is bounded
 historical coverage, not a replay of the complete chain.
 
-This is supporting smoke evidence, not a passing release-gate report. It does
-not cover historical state replay, block or transaction propagation, or live
-chain synchronization. The candidate lock and gate results remain unchanged.
+These are supporting test records, not passing release-gate attestations. The
+replay covers the stated historical prefix; live block or transaction
+propagation and full-chain synchronization remain unqualified. The candidate
+lock and gate results remain unchanged.
 
 ## Release rule
 
