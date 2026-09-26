@@ -14,13 +14,16 @@ or consensus upgrade.
 change that status. An `approved` lock must bind every gate to a checked-in,
 non-symlink JSON evidence file by its exact SHA-256 digest.
 
-The current `rc13` candidate pins the checked rkyv archive migration across
+The current `rc16` candidate retains the checked rkyv archive migration across
 Wasmer, idena-wasm, the native binding, and the node, with regenerated native
 archive digests. The Go toolchain advances to the node's required 1.26.8.
 Chain identifiers, consensus rules, and the SDK remain unchanged. The compiled
 archive ABI changes from 1 to 2; old compiled archives must be rebuilt from
 trusted Wasm. This does not establish blockchain state compatibility.
-Consumer pins describe the intended candidate stack, not verified deployment.
+The node also pins the reviewed DHT fork, preserving normal routing-table
+admission while excluding nonpublic addresses from the response diversity
+filter. Consumer pins describe the intended candidate stack, not verified
+deployment.
 
 ## Verify the lock
 
@@ -50,6 +53,19 @@ missing responses as a match. It prints only heights and canonical response
 digests. It never prints RPC keys, endpoints, block contents, transactions,
 wallet data, or identity addresses. `--quiet` emits one aggregate SHA-256
 result suitable for an external gate attestation.
+
+## Recorded smoke evidence
+
+[evidence/rc16-bootstrap-smoke.json](evidence/rc16-bootstrap-smoke.json) records
+an isolated comparison of official legacy v1.1.2 and the exact rc16 runtime.
+Both returned identical bootstrap-block RPC data at height 4,871,137, admitted
+each other as gossip peers, and exchanged IPFS payloads in both directions.
+The test used the supported local-discovery profile for private Docker
+addresses, with external routing disabled.
+
+This is supporting smoke evidence, not a passing release-gate report. It does
+not cover historical state replay, block or transaction propagation, or live
+chain synchronization. The candidate lock and gate results remain unchanged.
 
 ## Release rule
 

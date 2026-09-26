@@ -1,0 +1,61 @@
+{
+  "legacy": {
+    "binarySha256": "3861d14f4eeacae2fcb30ae2ee3b808422ee12af42b0ce46ef7826f87e473191",
+    "canonicalBlockSha256": "440bca892950c07f70787152aad112b27dfb1181846bbce9099fc269f473f23a",
+    "source": "https://github.com/idena-network/idena-go/releases/tag/v1.1.2",
+    "admittedPeerCount": 1
+  },
+  "modern": {
+    "binarySha256": "ad1ce5b27449c834fd2865afb20274896a977cfcafae48b5d859975c92518a52",
+    "canonicalBlockSha256": "440bca892950c07f70787152aad112b27dfb1181846bbce9099fc269f473f23a",
+    "source": "https://github.com/ubiubi18/IdenaAI/actions/runs/36233596805",
+    "admittedPeerCount": 1
+  },
+  "transfers": [
+    {
+      "sender": "legacy",
+      "receiver": "modern",
+      "cid": "bafkreidrj64xojndllgwhjvl6u5er5a5gvfw5gqdx7zcticm5me2j3p2ui",
+      "payloadSha256": "714fb97725a35acd63a6abf53a48f41d354b6e9a03bff229a04ceb09a4edfaa2",
+      "bytes": 57,
+      "matched": true
+    },
+    {
+      "sender": "modern",
+      "receiver": "legacy",
+      "cid": "bafkreicevpgjuzgm6g7l3dfufosveismgz4hkeydrcmsnwckm6ldrpaqxu",
+      "payloadSha256": "44abcc9a64ccf1bebd8cb42ba552224c3678751303889926d84a679638bc10bd",
+      "bytes": 57,
+      "matched": true
+    }
+  ],
+  "completedAt": "2026-09-26T10:14:38.847Z",
+  "scope": "Isolated bootstrap RPC and mixed-version gossip admission plus bidirectional IPFS data smoke; not historical state replay or full release qualification.",
+  "status": "smoke-passed",
+  "schema": 1,
+  "releaseId": "idena-mainnet-legacy-compat-2026.09.25-rc16",
+  "legacyBaselineCommit": "938be81dbdeff85f888f4337060a8ebabb12e5b5",
+  "runtimeCodeCommit": "0e50a50e6f5c158a83cec63f8fade2449e960364",
+  "bootstrap": {
+    "height": 4871137,
+    "cid": "bafkreigx47pfx7qyt2wbbm6uvy33g3eitqdsj4agafmnrcytrc243hdhee",
+    "bodyBytes": 209,
+    "bodySha256": "d7e7de5bfe189eac10b3d4ae37b36c889c0724f0060158d88b1388b5cd9c6721"
+  },
+  "environment": {
+    "isolation": "Docker internal network; no external routing",
+    "architecture": "linux/amd64 on arm64 Docker host",
+    "ipfsProfile": "local-discovery",
+    "autoOnline": false,
+    "networkId": 1,
+    "gossipProtocol": "/idena/gossip/1.1.0",
+    "containerImage": "[\"ubuntu@sha256:008173c23f95b170204355c12626cb5a965d779a7e1283b09e9cffbb1bf33ca3\"]"
+  },
+  "excludedClaims": [
+    "Historical block or state replay",
+    "Live-chain synchronization",
+    "Transaction or consensus-block propagation",
+    "All-platform reproducible release binaries",
+    "Application release approval"
+  ]
+}
